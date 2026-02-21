@@ -15,7 +15,7 @@ function App() {
 
   return (
     <main className="container">
-      <h1>Calculadora de precio final</h1>
+      <h1>Calculadora de precio</h1>
 
       <label htmlFor="precio-actual">Precio actual del producto</label>
       <input
@@ -72,7 +72,7 @@ function App() {
       </button>
 
       <article>
-        <strong>Total final: ${finalTotal.toFixed(2)}</strong>
+        <strong>Calculo final: ${finalTotal.toFixed(2)}</strong>
       </article>
     </main>
   );
