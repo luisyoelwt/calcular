@@ -1,14 +1,23 @@
 import { useMemo, useState } from "react";
 
 function App() {
-  const [currentPrice, setCurrentPrice] = useState<number | "">(0);
-  const [profitMargin, setProfitMargin] = useState<number | "">(0);
-  const [extraAmount, setExtraAmount] = useState<number | "">(0);
+  const [currentPrice, setCurrentPrice] = useState<string>("0");
+  const [profitMargin, setProfitMargin] = useState<string>("0");
+  const [extraAmount, setExtraAmount] = useState<string>("0");
+
+  const parseInputValue = (value: string) => {
+    if (value.trim() === "") return 0;
+
+    const normalizedValue = value.replace(",", ".");
+    const parsedNumber = Number(normalizedValue);
+
+    return Number.isFinite(parsedNumber) ? parsedNumber : 0;
+  };
 
   const finalTotal = useMemo(() => {
-    const price = currentPrice === "" ? 0 : currentPrice;
-    const margin = profitMargin === "" ? 0 : profitMargin;
-    const extra = extraAmount === "" ? 0 : extraAmount;
+    const price = parseInputValue(currentPrice);
+    const margin = parseInputValue(profitMargin);
+    const extra = parseInputValue(extraAmount);
 
     return price * (1 + margin / 100) + extra;
   }, [currentPrice, profitMargin, extraAmount]);
@@ -20,48 +29,44 @@ function App() {
       <label htmlFor="precio-actual">Precio actual del producto</label>
       <input
         id="precio-actual"
-        type="number"
-        min="0"
-        step="0.01"
+        type="text"
+        inputMode="decimal"
         value={currentPrice}
         onFocus={() => {
-          if (currentPrice === 0) setCurrentPrice("");
+          if (currentPrice === "0") setCurrentPrice("");
         }}
-        onChange={(event) =>
-          setCurrentPrice(event.target.value === "" ? "" : Number(event.target.value))
-        }
+        onChange={(event) => setCurrentPrice(event.target.value)}
       />
 
       <label htmlFor="margen-ganancia">Margen de ganancia (%)</label>
       <input
         id="margen-ganancia"
-        type="number"
-        step="0.01"
+        type="text"
+        inputMode="decimal"
         value={profitMargin}
         onFocus={() => {
-          if (profitMargin === 0) setProfitMargin("");
+          if (profitMargin === "0") setProfitMargin("");
         }}
-        onChange={(event) =>
-          setProfitMargin(event.target.value === "" ? "" : Number(event.target.value))
-        }
+        onChange={(event) => setProfitMargin(event.target.value)}
       />
 
       <label htmlFor="cantidad-extra">Cantidad extra</label>
       <input
         id="cantidad-extra"
-        type="number"
-        step="0.01"
+        type="text"
+        inputMode="decimal"
         value={extraAmount}
         onFocus={() => {
-          if (extraAmount === 0) setExtraAmount("");
+          if (extraAmount === "0") setExtraAmount("");
         }}
-        onChange={(event) =>
-          setExtraAmount(event.target.value === "" ? "" : Number(event.target.value))
-        }
+        onChange={(event) => setExtraAmount(event.target.value)}
       />
-
+      <article>
+        <strong>Calculo final: ${finalTotal.toFixed(2)}</strong>
+      </article>
       <button
         type="button"
+        style={{ display: "block", marginLeft: "auto" }}
         onClick={() => {
           setCurrentPrice("");
           setProfitMargin("");
@@ -70,10 +75,6 @@ function App() {
       >
         Limpiar
       </button>
-
-      <article>
-        <strong>Calculo final: ${finalTotal.toFixed(2)}</strong>
-      </article>
     </main>
   );
 }
